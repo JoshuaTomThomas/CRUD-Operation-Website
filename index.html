@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD Operation Website</title>
+  <link rel="icon" type="image/png" href="https://www.google.com/s2/u/0/favicons?domain=jacinto.design">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- CURD Operations -->
+   <h2>CRUD Operation</h2>
+   <form id="userForm">
+    <input type="text" id="name" placeholder="Name" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <button type="submit">Add User</button>
+  </form>
+
+  <!-- Script -->
+   <script>
+    //  Read
+    async function fetchUsers() {
+  try {
+    const response = await fetch("http://localhost:3000/users");
+    const users = await response.json();
+    console.log(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+}
+fetchUsers();
+
+// Create
+async function addUser(name, email) {
+  try {
+    const response = await fetch("http://localhost:3000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ name, email })
+    });
+
+    const newUser = await response.json();
+    console.log("User added:", newUser);
+  } catch (error) {
+    console.error("Error adding user:", error);
+  }
+}
+addUser("Alice Smith", "alice@example.com");
+
+// Update
+async function updateUser(id, updatedData) {
+  try {
+    const response = await fetch(`http://localhost:3000/users/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(updatedData)
+    });
+
+    const updatedUser = await response.json();
+    console.log("User updated:", updatedUser);
+  } catch (error) {
+    console.error("Error updating user:", error);
+  }
+}
+updateUser(1, { name: "John Wick", email: "wick@example.com" });
+
+// Delete
+async function deleteUser(id) {
+  try {
+    const response = await fetch(`http://localhost:3000/users/${id}`, {
+      method: "DELETE"
+    });
+
+    if (response.ok) {
+      console.log(`User with ID ${id} deleted.`);
+    } else {
+      console.error("Error deleting user.");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+deleteUser(1);
+
+document.getElementById("userForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      addUser(name, email);
+    });
+
+   </script>
+   <script src="script.js"></script>
+</body>
+</html>
